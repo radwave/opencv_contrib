@@ -3,8 +3,52 @@ if(APPLE_FRAMEWORK)
   ocv_module_disable(freetype)
 endif()
 
-ocv_check_modules(FREETYPE freetype2)
-ocv_check_modules(HARFBUZZ harfbuzz)
+FIND_PATH(FREETYPE_INCLUDE_DIRS
+    NAMES freetype2/ft2build.h
+    HINTS $ENV{FREETYPE_DIR}/include
+        ${CMAKE_INSTALL_PREFIX}/include
+    PATHS /usr/local/include
+        /usr/include
+    NO_CMAKE_FIND_ROOT_PATH
+)
+FIND_LIBRARY(
+    FREETYPE_LIBRARIES
+    NAMES freetype
+    HINTS $ENV{FREETYPE_DIR}/lib
+        ${CMAKE_INSTALL_PREFIX}/lib
+        ${CMAKE_INSTALL_PREFIX}/lib64
+    PATHS /usr/local/lib
+        /usr/lib
+        /usr/lib64
+    NO_CMAKE_FIND_ROOT_PATH
+)
+
+if(FREETYPE_INCLUDE_DIRS AND FREETYPE_LIBRARIES)
+    set(FREETYPE_FOUND TRUE)
+endif()
+
+FIND_PATH(HARFBUZZ_INCLUDE_DIRS
+    NAMES harfbuzz/hb.h
+    HINTS $ENV{HARFBUZZ_DIR}/include
+        ${CMAKE_INSTALL_PREFIX}/include
+    PATHS /usr/local/include
+        /usr/include
+    NO_CMAKE_FIND_ROOT_PATH
+)
+FIND_LIBRARY(
+    HARFBUZZ_LIBRARIES
+    NAMES harfbuzz
+    HINTS $ENV{HARFBUZZ_DIR}/lib
+        ${CMAKE_INSTALL_PREFIX}/lib
+        ${CMAKE_INSTALL_PREFIX}/lib64
+    PATHS /usr/local/lib
+        /usr/lib
+        /usr/lib64
+    NO_CMAKE_FIND_ROOT_PATH
+)
+if(HARFBUZZ_INCLUDE_DIRS AND HARFBUZZ_LIBRARIES)
+    set(HARFBUZZ_FOUND TRUE)
+endif()
 
 if(OPENCV_INITIAL_PASS)
   if(NOT FREETYPE_FOUND)
